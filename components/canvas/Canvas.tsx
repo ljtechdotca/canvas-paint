@@ -1,6 +1,13 @@
 import { INIT_BRUSH } from "@lib/constants";
+import { DataContext } from "@lib/context";
 import { IBrush } from "@types";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./Canvas.module.scss";
 export interface CanvasProps {}
 
@@ -37,7 +44,7 @@ export const Canvas = ({}: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [brush, setBrush] = useState<IBrush>(INIT_BRUSH);
-  const [link, setLink] = useState<string>("");
+  const { data, setData } = useContext(DataContext);
 
   const mouseMove = useCallback(
     (event: MouseEvent) => {
@@ -87,12 +94,12 @@ export const Canvas = ({}: CanvasProps) => {
       const down = downRef.current;
       if (canvas && context && down) {
         const dataURL = canvas.toDataURL("image/png");
-        setLink(dataURL);
+        setData(dataURL);
         canvas.removeEventListener("mousemove", mouseMove);
         downRef.current = null;
       }
     },
-    [context, mouseMove]
+    [context, mouseMove, setData]
   );
 
   const clearMouse = useCallback(() => {

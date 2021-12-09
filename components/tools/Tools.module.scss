@@ -10,6 +10,11 @@
   padding: 0.5rem;
 }
 
+.colors {
+  display: flex;
+  align-items: center;
+}
+
 .field {
   display: grid;
 }
@@ -43,4 +48,20 @@
       padding: 0;
     }
   }
+}
+
+.window {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid #ddd;
+  display: grid;
+  place-items: center;
+  height: calc(220px - 1rem);
+  width: calc(220px - 1rem);
+}
+
+.brush {
+  background-color: rgba(255, 255, 255, 0.5);
+
+  border: 1px solid #000;
+  border-style: dashed;
 }

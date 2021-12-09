@@ -47,40 +47,42 @@ export const Tools = ({}: ToolsProps) => {
     <aside className={styles.root}>
       <div className={styles.container}>
         <fieldset className={styles.field}>
-          <input
-            className={styles.input}
-            type="color"
-            name="primary"
-            id="primary"
-            value={brushData.color.primary}
-            onChange={(event) => {
-              handleBrush("primary", event.target.value);
-              setBrushData((state) => ({
-                ...state,
-                color: {
-                  ...state.color,
-                  primary: event.target.value,
-                },
-              }));
-            }}
-          />
-          <input
-            className={styles.input}
-            type="color"
-            name="secondary"
-            id="secondary"
-            value={brushData.color.secondary}
-            onChange={(event) => {
-              handleBrush("secondary", event.target.value);
-              setBrushData((state) => ({
-                ...state,
-                color: {
-                  ...state.color,
-                  secondary: event.target.value,
-                },
-              }));
-            }}
-          />
+          <div className={styles.colors}>
+            <input
+              className={styles.input}
+              type="color"
+              name="primary"
+              id="primary"
+              value={brushData.color.primary}
+              onChange={(event) => {
+                handleBrush("primary", event.target.value);
+                setBrushData((state) => ({
+                  ...state,
+                  color: {
+                    ...state.color,
+                    primary: event.target.value,
+                  },
+                }));
+              }}
+            />
+            <input
+              className={styles.input}
+              type="color"
+              name="secondary"
+              id="secondary"
+              value={brushData.color.secondary}
+              onChange={(event) => {
+                handleBrush("secondary", event.target.value);
+                setBrushData((state) => ({
+                  ...state,
+                  color: {
+                    ...state.color,
+                    secondary: event.target.value,
+                  },
+                }));
+              }}
+            />
+          </div>
         </fieldset>
         <fieldset className={styles.field}>
           <select
@@ -142,6 +144,20 @@ export const Tools = ({}: ToolsProps) => {
             }}
           />
         </fieldset>
+        <div className={styles.field}>
+          <div className={styles.label}>brush</div>
+          <div className={styles.window}>
+            <span
+              className={styles.brush}
+              style={{
+                opacity: `${brushData.opacity / 100}`,
+                height: brushData.height,
+                width: brushData.width,
+                borderRadius: brushData.type == "arc" ? "9999px" : "0px",
+              }}
+            />
+          </div>
+        </div>
       </div>
     </aside>
   );
