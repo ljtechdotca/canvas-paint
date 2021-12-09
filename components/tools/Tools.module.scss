@@ -1,0 +1,46 @@
+.root {
+  border-left: 1px solid #ddd;
+  background-color: rgba(0, 0, 0, 0.05);
+  width: 220px;
+}
+
+.container {
+  display: grid;
+  row-gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.field {
+  display: grid;
+}
+
+.select {
+  border: 1px solid #ddd;
+}
+
+.label {
+  display: block;
+  padding: 0.25rem;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  &[type="color"] {
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    height: 2.5rem;
+    overflow: hidden;
+    width: 2.5rem;
+    &::-webkit-color-swatch {
+      border: unset;
+    }
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+  }
+}
