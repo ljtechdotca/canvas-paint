@@ -8,15 +8,7 @@ export const Header = ({}: HeaderProps) => {
 
   return (
     <header className={styles.root}>
-      <div className={styles.container}>
-        <a
-          download={"my-pretty-image.png"}
-          href={data.replace("image/png", "image/octet-stream")}
-          className={styles.download}
-        >
-          download
-        </a>
-      </div>
+      <b>ljtechdotca</b> 
     </header>
   );
 };
