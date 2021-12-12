@@ -8,5 +8,6 @@ export const INIT_BRUSH: IBrush = {
   opacity: 100,
   width: 10,
   height: 10,
-  type: "arc",
+  type: "round",
+  operation: "source-over"
 };
