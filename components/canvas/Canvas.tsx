@@ -2,7 +2,6 @@ import { INIT_BRUSH } from "@lib/constants";
 import { DataContext } from "@lib/context";
 import { IBrush } from "@types";
 import React, {
-  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -11,59 +10,54 @@ import React, {
 import styles from "./Canvas.module.scss";
 export interface CanvasProps {}
 
+var isDrawing : boolean = false;
 var lastX : number | null;
 var lastY : number | null;
+var paths : Array<any> = [];
 
-const _arc = (context: CanvasRenderingContext2D) => {
-
+const getDrawConfig : any = (e: MouseEvent, brush: IBrush) => {
   return {
-    draw: function (x: number, y: number, r: number, color: string, opacity: number, operation: string) {
-      context.globalCompositeOperation = operation;
-      context.globalAlpha = opacity;
-      context.fillStyle = color;
-      context.beginPath();
-      context.arc(x, y, r, 0, Math.PI * 2);
-      context.fill();
-      context.closePath();
-    },
-  };
-};
+    x: e.offsetX,
+    y: e.offsetY,
+    width: brush.width,
+    height: brush.height,
+    shape: brush.type,
+    color: e.buttons == 1 ? brush.color.primary : brush.color.secondary,
+    color1: brush.color.primary,
+    color2: brush.color.secondary,
+    alpha: brush.opacity/100,
+    operation: brush.operation,
+    effect: brush.effect
+  }
+}
 
-const _square = (context: CanvasRenderingContext2D) => {
-  return {
-    draw: function (x: number, y: number, w: number, h: number, color: string, opacity: number, operation: string) {
-      context.globalCompositeOperation = operation;
-      context.fillStyle = color;
-      context.globalAlpha = opacity;
-      context.beginPath();
-      context.rect(x, y, w, h);
-      context.fill();
-      context.closePath();
-    },
-  };
-};
+const draw = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElement) => {
+  makePath(ctx, cfg);
+  
+  lastX = cfg.x;
+  lastY = cfg.y;
+  switch(cfg.effect){
+    case 'mirror-x' : return mirrorX(ctx, cfg, canvas); break;
+    case 'mirror-y' : return mirrorY(ctx, cfg, canvas); break;
+    case '' : return; break;
+  }
+}
 
-const render = {
-  arc: (context: CanvasRenderingContext2D) => _arc(context),
-  square: (context: CanvasRenderingContext2D) => _square(context),
-};
-
-const draw_v2 = (ctx: CanvasRenderingContext2D, cfg: any) => {
-  ctx.globalCompositeOperation = cfg.o;
-  ctx.globalAlpha = cfg.a;
-  ctx.fillStyle = cfg.c;
-  ctx.strokeStyle = cfg.c;
-  ctx.lineWidth = cfg.w;
-  ctx.lineCap = cfg.t;
-
+const makePath = (ctx: CanvasRenderingContext2D, cfg: any,) => {
+  ctx.globalCompositeOperation = cfg.operation;
+  ctx.globalAlpha = cfg.alpha;
+  ctx.fillStyle = cfg.color;
+  ctx.strokeStyle = cfg.color;
+  ctx.lineWidth = cfg.width;
+  ctx.lineCap = cfg.shape;
   ctx.beginPath();
-  if(cfg.t === 'square'){
-    ctx.rect(cfg.x - cfg.w / 2, cfg.y - cfg.w / 2, cfg.w, cfg.h);
+
+  if(cfg.shape === 'square'){
+    ctx.rect(cfg.x - cfg.width / 2, cfg.y - cfg.width / 2, cfg.width, cfg.height);
   }
-  else if(cfg.t === 'round'){
-    ctx.arc(cfg.x - cfg.w / 16, cfg.y - cfg.w / 16, cfg.w /2, 0, Math.PI * 2);
+  else if(cfg.shape === 'round'){
+    ctx.arc(cfg.x - cfg.width / 16, cfg.y - cfg.width / 16, cfg.width /2, 0, Math.PI * 2);
   }
- 
   // connect pints when mouse moves fast
   // if (lastX && lastY && (cfg.x !== lastX || cfg.y !== lastY)) {
   //   ctx.moveTo(lastX, lastY);
@@ -71,138 +65,103 @@ const draw_v2 = (ctx: CanvasRenderingContext2D, cfg: any) => {
   // }
   ctx.closePath();
   ctx.fill();
-  // ctx.stroke();
-  
-  lastX = cfg.x;
-  lastY = cfg.y;
+  paths.push(cfg);
+  // ctx.stroke(); 
 }
 
-const clearCanvas = (ctx: CanvasRenderingContext2D | null, canvas: HTMLCanvasElement | null ) => {
-  ctx?.clearRect(0, 0, canvas?.offsetWidth || 0, canvas?.offsetHeight || 0);
+const mirrorX = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElement) => {
+  let mirror_x : number = cfg.x;
+  if(cfg.x < canvas.width / 2){
+    mirror_x = canvas.width - cfg.x;
+  }
+  else if(cfg.x > canvas.width / 2){
+    mirror_x = (canvas.width / 2) - (cfg.x - (canvas.width / 2));
+  }
+  let mirror_cfg = Object.assign({}, cfg, {x: mirror_x, effect: ''});
+  makePath(ctx, mirror_cfg);
+} 
+
+const mirrorY = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElement) => {
+  let mirror_y : number = cfg.y;
+  if(cfg.y < canvas.height / 2){
+    mirror_y = canvas.height - cfg.y;
+  }
+  else if(cfg.y > canvas.height / 2){
+    mirror_y= (canvas.height / 2) - (cfg.y - (canvas.height / 2));
+  }
+  let mirror_cfg = Object.assign({}, cfg, {y: mirror_y, effect: ''});
+  makePath(ctx, mirror_cfg);
+} 
+
+const clearCanvas = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+  ctx.clearRect(0, 0, canvas.offsetWidth || 0, canvas.offsetHeight || 0);
+  paths = [];
+}
+
+
+const undoPath = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+  let refresh_paths = paths.slice(0, -1);
+  clearCanvas(ctx, canvas);
+  refresh_paths.forEach(cfg => makePath(ctx, cfg));
+}
+
+const fitCanvas = (canvas: HTMLCanvasElement) => {
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth - 220;
+}
+
+const saveImageWithName = (canvas: HTMLCanvasElement) => {
+  let file_name = prompt('File Name');
+  if(file_name){
+    let link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = file_name;
+    link.click();
+    link.remove();
+  }
 }
 
 export const Canvas = ({}: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [brush, setBrush] = useState<IBrush>(INIT_BRUSH);
   const { data, setData } = useContext(DataContext);
   const [link, setLink] = useState<string>("");
-
-  const mouseMove = useCallback(
-    (event: MouseEvent) => {
-      event.stopPropagation();
-      const down = downRef.current;
-      if (context && down) {
-        const { color, opacity, width, height, type, operation } = brush;
-        const x = event.offsetX;
-        const y = event.offsetY;
-        const c = event.buttons == 1 ? `${color.primary}` : `${color.secondary}`;
-        draw_v2(context, {
-          t: type,
-          x: x,
-          y: y,
-          w: width,
-          h: height,
-          c: c,
-          a: opacity/100,
-          o: operation
-        });
-       
-        // switch (type) {
-        //   case "arc":
-        //     render
-        //       .arc(context)
-        //       .draw(x - width / 16, y - width / 16, width / 2, c, opacity/100, operation);
-        //     break;
-        //   case "square":
-        //     render
-        //       .square(context)
-        //       .draw(x - width / 2, y - width / 2, width, height, c, opacity/100, operation);
-        //     break;
-        //   default:
-        //     break;
-        // }
-      }
-    },
-    [brush, context]
-  );
-
   const downRef = useRef<{ x: number; y: number } | null>(null);
-  
-  const mouseDown = useCallback(
-    (event: MouseEvent) => {
-      const canvas = canvasRef.current;
-      downRef.current = { x: event.offsetX, y: event.offsetY };
-      if (canvas) {
-        canvas.addEventListener("mousemove", mouseMove);
-      }
-    },
-    [mouseMove]
-  );
-
-  const mouseUp = useCallback(
-    (event: MouseEvent) => {
-      const canvas = canvasRef.current;
-      const down = downRef.current;
-      if (canvas && context && down) {
-        const dataURL = canvas.toDataURL("image/png");
-        setData(dataURL);
-        canvas.removeEventListener("mousemove", mouseMove);
-        downRef.current = null;
-        lastX = null;
-        lastY = null;
-      }
-    },
-    [context, mouseMove, setData]
-  );
-
-  const clearMouse = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.removeEventListener("mousemove", mouseMove);
-    }
-  }, [mouseMove]);
-
-  useEffect(() => {
-    window.addEventListener("mousemove", clearMouse);
-    return () => {
-      window.removeEventListener("mousemove", clearMouse);
-    };
-  }, [clearMouse]);
 
   useEffect(() => {
     // init canvas dimensions and drawing context
     const canvas = canvasRef.current;
-    const { innerHeight, innerWidth } = window;
-
     if (canvas) {
-      const newContext = canvas.getContext("2d");
-      setContext(newContext);
-      canvas.width = innerWidth - 220;
-      canvas.height = innerHeight;
-      window.addEventListener('clear-canvas', () => clearCanvas(newContext, canvas))
+      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+      setContext(ctx);
+      fitCanvas(canvas);
+      canvas.addEventListener("mousedown", e => {
+        isDrawing = true;
+        draw(ctx, getDrawConfig(e, brush), canvas);
+      });
+      canvas.addEventListener("mousemove", e => {
+        if(isDrawing === true){
+          draw(ctx, getDrawConfig(e, brush), canvas);
+        }
+      });
+      canvas.addEventListener("mouseup", () => {
+        isDrawing = false;
+      });
+      canvas.addEventListener("mouseleave", () => {
+        isDrawing = false;
+      });
+      canvas.addEventListener("contextmenu", e => e.preventDefault());
+      window.addEventListener("keydown", e => {
+        if (e.ctrlKey && e.key == "z") {
+          undoPath(ctx, canvas);
+        }
+      })
+      window.addEventListener('clear-canvas', () => clearCanvas(ctx, canvas));
+      window.addEventListener('resize', () => fitCanvas(canvas));
+      window.addEventListener('save-as', () => saveImageWithName(canvas));
     }
   }, []);
-
-  const contextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-    return false;
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas && context) {
-      // todo - research globalCompositeOperation
-      // context.globalCompositeOperation = "copy";
-
-      canvas.addEventListener("mousedown", mouseDown);
-      canvas.addEventListener("mouseup", mouseUp);
-      return () => {
-        canvas.removeEventListener("mousedown", mouseDown);
-        canvas.removeEventListener("mouseup", mouseUp);
-      };
-    }
-  }, [context, mouseDown, mouseUp]);
 
   return (
     <div className={styles.root}>
@@ -210,7 +169,6 @@ export const Canvas = ({}: CanvasProps) => {
         <canvas
           className={styles.container}
           ref={canvasRef}
-          onContextMenu={contextMenu}
         />
       </div>
     </div>
