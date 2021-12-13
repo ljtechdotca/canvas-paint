@@ -121,35 +121,6 @@ const saveImageWithName = (canvas: HTMLCanvasElement) => {
   }
 }
 
-const draw_v2 = (ctx: CanvasRenderingContext2D, cfg: any) => {
-  ctx.globalCompositeOperation = cfg.o;
-  ctx.globalAlpha = cfg.a;
-  ctx.fillStyle = cfg.c;
-  ctx.strokeStyle = cfg.c;
-  ctx.lineWidth = cfg.w;
-  ctx.lineCap = cfg.t;
-
-  ctx.beginPath();
-  if(cfg.t === 'square'){
-    ctx.rect(cfg.x - cfg.w / 2, cfg.y - cfg.w / 2, cfg.w, cfg.h);
-  }
-  else if(cfg.t === 'round'){
-    ctx.arc(cfg.x - cfg.w / 16, cfg.y - cfg.w / 16, cfg.w /2, 0, Math.PI * 2);
-  }
- 
-  // connect pints when mouse moves fast
-  // if (lastX && lastY && (cfg.x !== lastX || cfg.y !== lastY)) {
-  //   ctx.moveTo(lastX, lastY);
-  //   ctx.lineTo(cfg.x, cfg.y);
-  // }
-  ctx.closePath();
-  ctx.fill();
-  // ctx.stroke();
-  
-  lastX = cfg.x;
-  lastY = cfg.y;
-}
-
 export const Canvas = ({}: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
