@@ -39,6 +39,10 @@ export const Tools = ({}: ToolsProps) => {
         newBrush.operation = value;
         setBrush(newBrush);
           return;
+      case "effect":
+        newBrush.effect = value;
+        setBrush(newBrush);
+          return;
       default:
         break;
     }
@@ -190,6 +194,22 @@ export const Tools = ({}: ToolsProps) => {
             <option value="luminosity">luminosity</option>
           </select>
         </fieldset>
+        <fieldset className={styles.field}>
+          <label htmlFor="effect" className={styles.label}>
+            Effect
+          </label>
+          <select className={styles.input} name="effect" id="effect" onChange={(event) => {
+            handleBrush("effect", event.target.value);
+            setBrushData((state) => ({
+              ...state,
+              effect: event.target.value
+            }));
+          }}>
+            <option value="">none</option>
+            <option value="mirror-x">mirror-x</option>
+            <option value="mirror-y">mirror-y</option>
+          </select>
+        </fieldset>
         <fieldset>
         </fieldset>
         <div className={styles.field}>
@@ -206,15 +226,6 @@ export const Tools = ({}: ToolsProps) => {
             />
           </div>
         </div>
-        <fieldset>
-          <a
-            download={"my-pretty-image.png"}
-            href={data.replace("image/png", "image/octet-stream")}
-            className={styles.download}
-          >
-            Download Image
-          </a>
-        </fieldset>
         <fieldset>
           <button onClick={e => window.dispatchEvent(new CustomEvent('clear-canvas'))}>Clear Canvas</button>
         </fieldset>

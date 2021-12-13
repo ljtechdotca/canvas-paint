@@ -9,5 +9,6 @@ export interface IBrush {
   width: number;
   height: number;
   type: string;
-  operation: string
+  operation: string,
+  effect: string
 }

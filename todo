@@ -1,5 +1,15 @@
-☐ tool bar
-  - show what the brush looks like inside a window
-☐ download button
-☐ transparent brush strokes
-
+☐ file drop down in header
+  - save file
+  - new file 
+    - show width and height options for canvas
+☐ center canvas in window and make document scollable x and y
+☐ zoom in/out contoller
+☐ layer
+  - create layer
+  - rename layer
+  - delete layer
+  - reorder layer (drag and drop iumplementation from other project)
+  - opacity on layer
+☐ import image
+☐ make tools-menu width draggable, and make height scrollable
+☐ group tool items by domain and make groups expandable/collapsable
