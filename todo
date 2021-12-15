@@ -1,15 +1,15 @@
-☐ file drop down in header
-  - save file
-  - new file 
-    - show width and height options for canvas
-☐ center canvas in window and make document scollable x and y
-☐ zoom in/out contoller
-☐ layer
+- zoom in/out contoller
+- file tabs
+  - new file event handler
+  - new file default 800x600 px
+  - show width and height options for canvas
+- layer
   - create layer
   - rename layer
   - delete layer
   - reorder layer (drag and drop iumplementation from other project)
   - opacity on layer
-☐ import image
-☐ make tools-menu width draggable, and make height scrollable
-☐ group tool items by domain and make groups expandable/collapsable
+- import image
+- make tools-menu width draggable, and make height scrollable
+- group tool items by domain and make groups expandable/collapsable
+- improve draw method

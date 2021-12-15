@@ -1,0 +1,72 @@
+#tools {
+  background-color: $color-1;
+  width: 220px;
+  padding: 4px;
+  height: 100vh;
+  position: absolute;
+  right: 0px;
+  top: $top-bar-height;
+  overflow: auto;
+  label {
+    color: $color-2;
+    display: block;
+    display: flex;
+    font-size: 0.75rem;
+    font-weight: 600;
+    align-items: center;
+  }
+   button {
+    width: 100%;
+  }
+  input[type="color"] {
+    width: 100%;
+    background-color: $color-2;
+    border: 1px solid $color-0;
+    cursor: pointer;
+    height: 2.5rem;
+    overflow: hidden;
+    width: 2.5rem;
+    &::-webkit-color-swatch {
+      border: unset;
+    }
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+  }
+  .window {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+    display: grid;
+    place-items: center;
+    height: calc(220px - 1rem);
+    width: calc(220px - 1rem);
+  }
+  .brush {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid #000;
+    border-style: dashed;
+  }
+  .container {
+    display: grid;
+    row-gap: 0.5rem;
+  }
+  .colors {
+    display: flex;
+    align-items: center;
+  }
+  .field {
+    display: grid;
+  }
+  .select {
+    border: 1px solid #ddd;
+  }
+  .tools-section{
+    border-bottom: 1px dotted $color-2;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    .section-label{
+      font-weight: bold;
+      color: $color-3;
+    }
+  }
+}
