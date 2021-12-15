@@ -9,6 +9,7 @@ import React, {
 } from "react";
 export interface CanvasProps {}
 
+var zoomScale : number = 1;
 var isDrawing : boolean = false;
 var lastX : number | null;
 var lastY : number | null;
@@ -32,8 +33,6 @@ const getDrawConfig : any = (e: MouseEvent, brush: IBrush) => {
 
 const draw = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElement) => {
   makePath(ctx, cfg);
-  
-  
   switch(cfg.effect){
     case 'mirror-x' : return mirrorX(ctx, cfg, canvas); break;
     case 'mirror-y' : return mirrorY(ctx, cfg, canvas); break;
@@ -50,7 +49,9 @@ const makePath = (ctx: CanvasRenderingContext2D, cfg: any) => {
   ctx.lineCap = cfg.shape === 'round' ? 'round' : 'square';
   ctx.lineJoin = cfg.shape === 'round' ? 'round' : 'bevel';
   ctx.imageSmoothingQuality = 'high';
+  ctx.scale(zoomScale, zoomScale);
   ctx.beginPath();
+  
   if (lastX && lastY && (cfg.x !== lastX || cfg.y !== lastY)) {
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(cfg.x, cfg.y);
@@ -59,7 +60,6 @@ const makePath = (ctx: CanvasRenderingContext2D, cfg: any) => {
   else{
     if(cfg.shape === 'square'){
       ctx.rect(cfg.x - cfg.width / 2, cfg.y - cfg.width / 2, cfg.width, cfg.height);
-      console.log(cfg.x - cfg.width / 2, cfg.y - cfg.width / 2, cfg.width, cfg.height)
     }
     else{
       ctx.arc(cfg.x, cfg.y, cfg.width /2, 0, Math.PI * 2);
@@ -81,7 +81,11 @@ const mirrorX = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElem
     mirror_x = (canvas.width / 2) - (cfg.x - (canvas.width / 2));
   }
   let mirror_cfg = Object.assign({}, cfg, {x: mirror_x, effect: ''});
+  lastX = null;
+  lastY = null;
   makePath(ctx, mirror_cfg);
+  lastX = null;
+  lastY = null;
 } 
 
 const mirrorY = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElement) => {
@@ -93,7 +97,11 @@ const mirrorY = (ctx: CanvasRenderingContext2D, cfg: any, canvas: HTMLCanvasElem
     mirror_y= (canvas.height / 2) - (cfg.y - (canvas.height / 2));
   }
   let mirror_cfg = Object.assign({}, cfg, {y: mirror_y, effect: ''});
+  lastX = null;
+  lastY = null;
   makePath(ctx, mirror_cfg);
+  lastX = null;
+  lastY = null;
 } 
 
 const clearCanvas = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -127,7 +135,6 @@ const saveImageWithName = (canvas: HTMLCanvasElement) => {
     link.remove();
   }
 }
-
 
 export const Canvas = ({}: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -163,11 +170,12 @@ export const Canvas = ({}: CanvasProps) => {
         lastY = null;
       });
       canvas.addEventListener("contextmenu", e => e.preventDefault());
+     
       window.addEventListener("keydown", e => {
         if (e.ctrlKey && e.key == "z") {
           undoPath(ctx, canvas);
         }
-      })
+      });
       window.addEventListener('clear-canvas', () => clearCanvas(ctx, canvas));
       window.addEventListener('save-as', () => saveImageWithName(canvas));
     }

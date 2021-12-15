@@ -7,6 +7,10 @@ export const TopBar = ({}: TopBar) => {
     window.dispatchEvent(new CustomEvent('save-as'));
   }
 
+  const showCanvasSizeModal = () => {
+    alert('todo');
+  }
+  
   return (
     <div id='top-bar' onMouseLeave={e => setDropDown("")}>
       <header id='top-bar-menu'>
@@ -24,21 +28,17 @@ export const TopBar = ({}: TopBar) => {
         </div>
 
         <div onMouseEnter={e => setDropDown("test")}>
-          <button>Test</button>
+          <button>Image</button>
           { 
             dropdown === "test" ? 
             <div className='dropdown-content'>
-              <button>test1</button>
-              <button>test2</button>
+              <button onClick={() => showCanvasSizeModal()}>Canvas Size</button>
             </div>
             :
             ""
           }
         </div>
       </header>
-      <div>
-        <span>file1</span>
-      </div>
     </div>
   );
 };

@@ -1,23 +1,13 @@
 #top-bar{
     font-size: 12px;
-    background-color: lightgrey;
+    background-color: $color-1;
     padding: 4px;
-    button {
-        font-size: 12px;
-        border: none;
-        outline: none;
-        padding: 2px;
-        border-radius: 2px;
-        &:hover{
-            color: white;
-            background-color:rgba(0, 0, 0, 0.35);
-        }
-    }
     #top-bar-menu{
+        height: $top-bar-height;
         display: flex;
         gap: 4px;
         .dropdown-content{
-            background-color: lightgrey;
+            background-color: $color-1;
             border-radius: 2px;
             padding: 4px;
             position: absolute;
@@ -27,12 +17,8 @@
             border: none;
             border-radius: 2px;
             margin-top: 2px;
-            -webkit-box-shadow: 0px 7px 4px 4px rgba(161,161,161,0.6); 
-            box-shadow: 0px 7px 4px 4px rgba(161,161,161,0.6);
-            button{
-                border: none;
-                background-color: none;
-            }
+            -webkit-box-shadow: 0px 7px 4px 4px rgba(0,0,0,.25); 
+            box-shadow: 0px 7px 4px 4px rgba(0,0,0,.25);
         }
     }
 }

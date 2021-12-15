@@ -10,6 +10,7 @@ export const Tools = ({}: ToolsProps) => {
   const { data, setData } = useContext(DataContext);
   const [section_other_collapsed, setSectionOtherCollapsed] = useState(false);
   const [section_brush_configuration_collapsed, sectionBrushConfigurationCollapsed] = useState(false);
+  const [zoom_level, changeZoomLevel] = useState(100);
 
   const handleBrush = (key: string, value: string) => {
     let newBrush = brush;
@@ -223,6 +224,28 @@ export const Tools = ({}: ToolsProps) => {
           ""
           :
           <div className='section-content'>
+            <fieldset>
+                <label htmlFor="zoom">
+                  Zoom Level {zoom_level}% 
+                </label>
+                <input
+                  type="range"
+                  name="zoom"
+                  id="zoom"
+                  min={10}
+                  max={1000}
+                  step={10}
+                  value={zoom_level}
+                  onChange={(event) => {
+                    let scale : number = parseInt(event.target.value) / 100;
+                    let layers = document.getElementsByClassName('canvas-layer');
+                    for(let i = 0; i<layers.length; i++){
+                      layers[i].style.transform = `scale(${scale})`;
+                    }
+                    changeZoomLevel(parseInt(event.target.value));
+                  }}
+                />
+            </fieldset>
             <fieldset>
               <button onClick={e => window.dispatchEvent(new CustomEvent('clear-canvas'))}>Clear Canvas</button>
             </fieldset>
