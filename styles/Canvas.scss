@@ -1,0 +1,14 @@
+#work-area {
+  width: calc(100% - 220px);
+  background-color: gray;
+  height: calc(100vh - 40px);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .canvas-layer {
+    background-color: #ffffff;
+    user-select: none;
+    display: flex;
+  }
+}

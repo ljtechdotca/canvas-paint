@@ -22,3 +22,9 @@ fieldset {
 .flex {
   display: flex;
 }
+
+@import './TopBar.scss';
+@import './Tools.scss';
+@import './Canvas.scss';
+@import './Cursor.scss';
+

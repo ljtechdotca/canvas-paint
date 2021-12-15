@@ -1,0 +1,11 @@
+#cursor {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0px;
+    height: 0px;
+    pointer-events: none;
+    outline: 1px dotted #bbbbbb;
+    z-index: 1000;
+    display: none;
+}

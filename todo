@@ -1,8 +1,9 @@
-☐ file drop down in header
-  - save file
-  - new file 
-    - show width and height options for canvas
-☐ center canvas in window and make document scollable x and y
+
+☐ file tabs
+  - new file event handler
+  - new file default 800x600 px
+  - show width and height options for canvas
+☐ center canvas in window and make document scollable x and y V
 ☐ zoom in/out contoller
 ☐ layer
   - create layer
