@@ -5,8 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "component": "node ./lib/cli/component.mjs"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "12.0.7",

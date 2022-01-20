@@ -9,5 +9,6 @@ export const INIT_BRUSH: IBrush = {
   width: 10,
   height: 10,
   type: "round",
-  operation: "source-over"
+  operation: "source-over",
+  effect: "",
 };

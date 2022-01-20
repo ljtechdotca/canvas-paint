@@ -1,2 +1,1 @@
-export * from "./brush-context"
-export * from "./data-context"
+export * from "./brush-context";
